@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.impl.SimpleLoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 
 public class StudentServiceImpl implements StudentService {
@@ -23,7 +24,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student save(Student student) {
-       session = sessionFactory.getCurrentSession();
+        session = sessionFactory.getCurrentSession();
         try {
 
             loger.info("save(): begin session Transaction");
@@ -46,7 +47,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Optional<Student> findById(int id) {
-        try{
+        try {
             loger.info("findById: start session");
             session = sessionFactory.getCurrentSession();
 
@@ -56,8 +57,7 @@ public class StudentServiceImpl implements StudentService {
             loger.info("findById: retrieve student");
             Student result = session.get(Student.class, id);
             return Optional.of(result);
-        }
-        finally {
+        } finally {
             loger.info("findById: closing session \n");
             session.close();
         }
@@ -67,4 +67,49 @@ public class StudentServiceImpl implements StudentService {
     public void saveAll(Iterable<Student> students) {
 
     }
+
+    @Override
+    public List<Student> findAll() {
+        session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        List<Student> result;
+        try {
+            result = session
+                    .createQuery("from Student", Student.class)
+                    .getResultList();
+        } finally {
+            session.close();
+        }
+        return result;
+    }
+
+    @Override
+    public List<Student> findByFirstName(String firstName) {
+        session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+
+        List<Student> result;
+        try {
+            result = session.createQuery("FROM Student s where s.firstName = '" + firstName + "'", Student.class)
+                    .getResultList();
+        } finally {
+            session.close();
+        }
+        return result;
+    }
+
+    @Override
+    public List<Student> findByEmailLike(String emailLike) {
+        session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        List<Student> result;
+        try {
+            result = session.createQuery("FROM Student s WHERE s.email LIKE '%" + emailLike + "'", Student.class)
+                    .getResultList();
+        } finally {
+            session.close();
+        }
+        return result;
+    }
+
 }

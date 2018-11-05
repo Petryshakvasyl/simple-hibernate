@@ -16,13 +16,22 @@ public class HibernateApplication {
         StudentService service = new StudentServiceImpl(sessionFactory);
         Student studentJohn = new Student("John", "Snow", "john@snow.com");
         Student studenBob = new Student("Bob", "Martin", "bobmartin@cc.com");
+
+        Student studentBruce = new Student("Bruce", "Eckel", "bruce_eckel@gmail.com");
+        Student studenGam = new Student("Gam", "Goff", "goff@gmail.com");
         try{
-            //saving students
+
             service.save(studentJohn);
             service.save(studenBob);
-            // retrieving students
-            System.out.println(service.findById(studentJohn.getId()).get());
-            System.out.println(service.findById(studenBob.getId()).get());
+//             retrieving students
+            System.out.println(service.findById(studentJohn.getId()).orElse(new Student()));
+            System.out.println(service.findById(studenBob.getId()).orElse(new Student()));
+
+            service.findAll().forEach(System.out::println);
+            System.out.println("Students which first name is Bruce");
+            service.findByFirstName("Bruce").forEach(System.out::println);
+            System.out.println("Students which email and with gmail.com");
+            service.findByEmailLike("gmail.com").forEach(System.out::println);
 
         }
         finally {
