@@ -14,4 +14,8 @@ public interface StudentService {
     List<Student> findByFirstName(String firstName);
 
     List<Student> findByEmailLike(String emaileLike);
+
+    Student update(Student student);
+
+    void delete (int id);
 }

@@ -112,4 +112,33 @@ public class StudentServiceImpl implements StudentService {
         return result;
     }
 
+    @Override
+    public Student update(Student student) {
+        session = sessionFactory.getCurrentSession();
+        loger.debug("update: begin transaction");
+        session.beginTransaction();
+        try {
+            loger.debug("update: updating student");
+            session.update(student);
+            loger.debug("commit");
+            session.getTransaction().commit();
+        } finally {
+            session.close();
+        }
+        return student;
+    }
+
+    @Override
+    public void delete(int id) {
+        session = sessionFactory.getCurrentSession();
+        loger.debug("delete: begin transaction");
+        session.beginTransaction();
+        try{
+            session.createQuery("DELETE FROM Student where id=" + id)
+                    .executeUpdate();
+        }
+        finally {
+            session.close();
+        }
+    }
 }
